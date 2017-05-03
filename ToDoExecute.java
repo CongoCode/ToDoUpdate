@@ -21,55 +21,53 @@ public class ToDoExecute extends Application
     @Override // Override the start method in the Application class
     public void start(Stage primaryStage) 
     {            
-        
+        //Creating the objects 
         MasterToDo todoDefault = new MasterToDo();
+        LingalaToDo todoLin = new LingalaToDo();
+        KirundiToDo todoKir = new KirundiToDo();
+        FrenchToDo todoFre = new FrenchToDo();
+        SwahiliToDo todoSwa = new SwahiliToDo();
         Scene defaultScene = new Scene(todoDefault.stageSetUp(todoDefault.getDaysofWeek()));
         primaryStage.setScene(defaultScene);
         
+        //assigning a task to the ComboBox
        todoDefault.chooseBox.setOnAction(e -> 
         {
-            Scene prompt;
-            //choosing the languages
+             Scene prompt;
+             GridPane pane = new GridPane();
             switch(todoDefault.chooseBox.getValue())
             {
                 case "Swahili": 
-                 SwahiliToDo todoSwa = new SwahiliToDo();
-                 prompt = new Scene(todoSwa.stageSetUp(todoSwa.getSiku()));
-                 todoSwa.chooseBox.setValue("Swahili");  
-                 primaryStage.setScene(prompt);        
+                 pane = todoSwa.stageSetUp(todoSwa.getSiku()); 
+                 todoSwa.chooseBox.setValue("Swahili"); 
                  break;
                  
                 case "English":
-                 MasterToDo newTodoDefault = new MasterToDo();
-                 prompt = new Scene(newTodoDefault.stageSetUp(newTodoDefault.getDaysofWeek()));
-                 newTodoDefault.chooseBox.setValue("English");   
-                 primaryStage.setScene(prompt); 
+                 pane = todoDefault.stageSetUp(todoDefault.getDaysofWeek());
+                 todoDefault.chooseBox.setValue("English");   
                  break;
                 
                 case "Français":
-                 FrenchToDo todoFre = new FrenchToDo();
-                 prompt = new Scene(todoFre.stageSetUp(todoFre.getJours()));
+                 pane = todoFre.stageSetUp(todoFre.getJours());   
                  todoFre.chooseBox.setValue("Français");  
-                 primaryStage.setScene(prompt);
                  break;
 
                 case "Kirundi":
-                 KirundiToDo todoKir = new KirundiToDo();
-                 prompt = new Scene(todoKir.stageSetUp(todoKir.getUmunsi()));
+                 pane = todoKir.stageSetUp(todoKir.getUmunsi()); 
                  todoKir.chooseBox.setValue("Kirundi"); 
-                 primaryStage.setScene(prompt);
                  break;
 
                 case "Lingala":
-                 LingalaToDo todoLin = new LingalaToDo();
-                 prompt = new Scene(todoLin.stageSetUp(todoLin.getMikolo()));
-                 todoLin.chooseBox.setValue("Lingala");   
-                 primaryStage.setScene(prompt);
+                 pane = todoLin.stageSetUp(todoLin.getMikolo()); 
+                 todoLin.chooseBox.setValue("Lingala"); 
                  break;
             }
+            prompt = new Scene(pane);
+            primaryStage.setScene(prompt);    
         });
 
-       primaryStage.show(); 
+         primaryStage.setTitle("ToDo List");
+         primaryStage.show(); 
     }
 
     public static void main(String[] args) 

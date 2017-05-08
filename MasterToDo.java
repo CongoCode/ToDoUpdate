@@ -35,13 +35,14 @@ import javafx.stage.Stage;
 public class MasterToDo {
 
     private ArrayList<String> DaysofWeek = new ArrayList();
-    public ComboBox<String> chooseBox;
-    public static ArrayList<String> langChoice = new ArrayList();
-    private ArrayList<TextArea> taDays = new ArrayList<>();
     private ArrayList<CheckBox> cbDays = new ArrayList<>();
-   // public ArrayList<Scanner> scanFiles = new ArrayList<>();
     private ArrayList<PrintWriter> pwOut = new ArrayList<>();
     private ArrayList<TextArea> txt = new ArrayList<>();
+    private ArrayList<TextArea> taDays = new ArrayList<>();
+    public ComboBox<String> chooseBox;
+    public static ArrayList<String> langChoice = new ArrayList();
+   
+    
 
     public MasterToDo() {
 
@@ -75,14 +76,10 @@ public class MasterToDo {
         return DaysofWeek;
     }
 
-    public void setDaysofWeek(ArrayList<String> DaysofWeek) {
-        this.DaysofWeek = DaysofWeek;
-    }
-
     //method implementation that allows adding days
-    private void days(ArrayList<String> weekdays, GridPane daysPane) {
+    private void days(ArrayList<String> DaysofWeek, GridPane daysPane) {
         for (int k = 0; k < 7; k++) {
-            daysPane.add(new Label("" + weekdays.get(k)), 1, k);
+            daysPane.add(new Label("" + DaysofWeek.get(k)), 1, k);
             TextArea t = new TextArea();
             taDays.add(t);
             daysPane.add(t, 2, k);
@@ -175,7 +172,7 @@ public class MasterToDo {
              
             // t.setText(toDoMessage[k]);    
                
-             System.out.println(toDoMessage.get(k));
+//             System.out.println(toDoMessage.get(k));
             // System.out.println(toDoMessage[k]);
              showtext.getChildren().add(t); 
              scanFiles.close();
@@ -191,6 +188,10 @@ public class MasterToDo {
      catch(NoSuchElementException d)
      {
          System.out.println("Add More Lines (three in each day)");
+         Scene catchScene = new Scene(new Button("Add More Lines (three in each day)"), 300,300);
+         Stage catchStage = new Stage();
+         catchStage.setScene(catchScene);
+         catchStage.show();
      }
         // t.setEditable(false);
      
@@ -225,3 +226,4 @@ public class MasterToDo {
         }
     }
 }
+

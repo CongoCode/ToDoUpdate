@@ -31,58 +31,70 @@ import javafx.stage.Stage;
  *
  * @author benismunganga
  */
-public class MasterToDo
-{
+public class MasterToDo {
 
-    private ArrayList <String> DaysofWeek = new ArrayList();
-    public  ComboBox <String> chooseBox;
+    private ArrayList<String> DaysofWeek = new ArrayList();
+    public ComboBox<String> chooseBox;
     public static ArrayList<String> langChoice = new ArrayList();
     private ArrayList<TextArea> taDays = new ArrayList<>();
     private ArrayList<CheckBox> cbDays = new ArrayList<>();
-    
-    public MasterToDo()
-    {
-        
-         DaysofWeek.add("Monday");
-         DaysofWeek.add("Tuesday");
-         DaysofWeek.add("Wednesday");
-         DaysofWeek.add("Thursday");
-         DaysofWeek.add("Friday");
-         DaysofWeek.add("Saturday");
-         DaysofWeek.add("Sunday");
-    }
-    
-    
-    public ArrayList <String> getDaysofWeek() 
-    {
-         return DaysofWeek;
-    }
-    
-    public void setDaysofWeek(ArrayList <String> DaysofWeek) 
-    {
-         this.DaysofWeek = DaysofWeek;
-    }
-    
-       //method implementation that allows adding days
-    private void days(ArrayList<String> weekdays, GridPane daysPane)
-    {        
-         for(int k=0;k<7;k++)
-            {
-                 daysPane.add(new Label(""+weekdays.get(k)),1,k);
-                 TextArea t=new TextArea();
-                 taDays.add(t);
-                 daysPane.add(t,2,k);
-                 CheckBox ck=new CheckBox();
-                 cbDays.add(ck);
-                 daysPane.add(ck, 3, k);  
+    public Scanner scanFiles[] = new Scanner[7];
+    private ArrayList<PrintWriter> pwOut = new ArrayList<>();
+    private ArrayList<TextArea> txt = new ArrayList<>();
+
+    public MasterToDo() {
+
+        //array list of printwriters 
+        try {
+            for (int k = 0; k < 7; k++) {
+                PrintWriter outP = new PrintWriter(new File("ToDo" + k + ".txt"));
+                pwOut.add(outP);
             }
+        } catch (FileNotFoundException ex) {
+            System.out.print("File Not Found");
+        }
+
+        DaysofWeek.add("Monday");
+        DaysofWeek.add("Tuesday");
+        DaysofWeek.add("Wednesday");
+        DaysofWeek.add("Thursday");
+        DaysofWeek.add("Friday");
+        DaysofWeek.add("Saturday");
+        DaysofWeek.add("Sunday");
     }
-    
-     /* This method returns a pane that will be used in the "ToDoExecute class" while
+
+    /**
+     * @return the chooseBox
+     */
+    public ComboBox<String> getChooseBox() {
+        return chooseBox;
+    }
+
+    public ArrayList<String> getDaysofWeek() {
+        return DaysofWeek;
+    }
+
+    public void setDaysofWeek(ArrayList<String> DaysofWeek) {
+        this.DaysofWeek = DaysofWeek;
+    }
+
+    //method implementation that allows adding days
+    private void days(ArrayList<String> weekdays, GridPane daysPane) {
+        for (int k = 0; k < 7; k++) {
+            daysPane.add(new Label("" + weekdays.get(k)), 1, k);
+            TextArea t = new TextArea();
+            taDays.add(t);
+            daysPane.add(t, 2, k);
+            CheckBox ck = new CheckBox();
+            cbDays.add(ck);
+            daysPane.add(ck, 3, k);
+        }
+    }
+
+    /* This method returns a pane that will be used in the "ToDoExecute class" while
     setting up the stage for the scene
-    */
-    public GridPane stageSetUp(ArrayList <String> weekdays)       
-    {
+     */
+    public GridPane stageSetUp(ArrayList<String> weekdays) {
         Stage stage1 = new Stage(); // Create a new stage
         stage1.setTitle("Set To Do"); // Set the stage title
         //grid pane/text enter
@@ -98,82 +110,102 @@ public class MasterToDo
         langChoice.add("Swahili");
         langChoice.add("Lingala");
         langChoice.add("Kirundi");
-        
-        
+
         //loop that adds items to ComboBox
-        for(int k = 0; k < 5; k++)
-             {
-                chooseBox.getItems().addAll(langChoice.get(k));
-             }
-        chooseBox.setValue("English");
+        for (int k = 0; k < 5; k++) {
+            getChooseBox().getItems().addAll(langChoice.get(k));
+        }
+        getChooseBox().setValue("English");
+
         Button addBtn = new Button("Add");
         addBtn.setAlignment(Pos.BOTTOM_RIGHT);
         Button clear = new Button("Clear");
         clear.setAlignment(Pos.BOTTOM_CENTER);
-        Button save = new Button("Save File");
-      
+        Button showToDoBtn = new Button("Show ToDo");
+
         //method call that adds days of the week
         days(weekdays, pane);
-        
+
         //adding buttons to the GridPane
         pane.add(addBtn, 1, 8);
         pane.add(clear, 2, 8);
-        pane.add(save, 3, 8);
-        pane.add(chooseBox, 0, 0);
+        pane.add(showToDoBtn, 3, 8);
+        pane.add(getChooseBox(), 0, 0);
         pane.setPrefSize(1000, 600);
-        
+        showToDoBtn.setOnAction(e -> ShowAdded());
         addBtn.setOnAction(e -> SendOut());
         clear.setOnAction(e -> Clear());
-        
+
         return pane;
 
     }
-    
-    
-   public Stage ShowAdded()
-      {
-        Stage showstage= new Stage();
-         showstage.setTitle("ShowToDo");
-         HBox showDays=new HBox();
-         VBox showtext=new VBox();
-         GridPane showPane=new GridPane();
-          
-         TextArea txt=new TextArea();
-         txt.setEditable(false);
-         Scanner getText=new Scanner("todo.txt");
-         
-         showPane.getChildren().addAll(showDays,showtext);
-         Scene show=new Scene(showPane);
-         showstage.setScene(show);
-         return showstage;
-      }
-    
-      public void SendOut() 
-      {
-        try 
-       {
-            PrintWriter outP= new PrintWriter(new File("todo.txt"));
-             for(int k=0;k<7;k++)
-                {
-                     if(cbDays.get(k).isSelected()){
-                     outP.println(""+taDays.get(k).getText());
-                }
-             outP.close();
-             }  
-         }
-        catch(FileNotFoundException ex) 
-             {
-                 System.out.println("file not found");          
-             }
-       }
 
-    private void Clear() 
-    {
-        for(int k=0;k<7;k++)
-                {
-                     if(cbDays.get(k).isSelected())
-                     taDays.get(k).setText("");
-                }
+    public void ShowAdded() {
+        Stage showstage = new Stage();
+        showstage.setTitle("ShowToDo");
+        VBox showDays = new VBox(50);
+        showDays.getChildren().addAll(new Label("Monday: "), new Label("Tuesday: "),
+                new Label("Wednesday: "), new Label("Thursday: "), new Label("Friday: "),
+                new Label("Saturday: "), new Label("Sunday: "));
+
+        showDays.setPadding(new Insets(20, 20, 20, 20));
+        GridPane showPane = new GridPane();
+
+        HBox showtext = new HBox();
+
+        String[] toDoMessage = new String[8];
+      try{ 
+        for (int k = 0; k < 7; k++) 
+        {
+          
+             scanFiles[k] = new Scanner("ToDo" + k + ".txt");
+             toDoMessage[k] = scanFiles[k].nextLine();
+             TextArea t = new TextArea();
+             t.setText(toDoMessage[k]);
+             System.out.println(toDoMessage[k]);
+            // txt.add(t);
+           //  txt.get(k).setText(scanFiles[k].nextLine());
+             showtext.getChildren().add(t);
+             showPane.add(showtext, 2, 1);
+            
+             
+       }
+      }
+    catch(FileNotFoundException e){
+     System.out.println("File Not Found");
+                
+             }
+        // t.setEditable(false);
+
+        showPane.add(showDays, 1, 1);
+        
+        showPane.setHgap(10);
+        showPane.setVgap(10);
+        Scene show = new Scene(showPane);
+        showstage.setScene(show);
+        showstage.show();
     }
-  }
+
+    public void SendOut() {
+        {
+            for (int k = 0; k < 7; k++) {
+                if (cbDays.get(k).isSelected()) {
+
+                    pwOut.get(k).println("" + taDays.get(k).getText());
+                    pwOut.get(k).close();
+                }
+            }
+        }
+
+    }
+
+    private void Clear() {
+        for (int k = 0; k < 7; k++) {
+            if (cbDays.get(k).isSelected()) {
+                taDays.get(k).setText("");
+            }
+        }
+    }
+}
+
 

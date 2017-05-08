@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
@@ -38,7 +39,7 @@ public class MasterToDo {
     public static ArrayList<String> langChoice = new ArrayList();
     private ArrayList<TextArea> taDays = new ArrayList<>();
     private ArrayList<CheckBox> cbDays = new ArrayList<>();
-    public Scanner scanFiles[] = new Scanner[7];
+   // public ArrayList<Scanner> scanFiles = new ArrayList<>();
     private ArrayList<PrintWriter> pwOut = new ArrayList<>();
     private ArrayList<TextArea> txt = new ArrayList<>();
 
@@ -143,7 +144,7 @@ public class MasterToDo {
     public void ShowAdded() {
         Stage showstage = new Stage();
         showstage.setTitle("ShowToDo");
-        VBox showDays = new VBox(50);
+        VBox showDays = new VBox(80);
         showDays.getChildren().addAll(new Label("Monday: "), new Label("Tuesday: "),
                 new Label("Wednesday: "), new Label("Thursday: "), new Label("Friday: "),
                 new Label("Saturday: "), new Label("Sunday: "));
@@ -151,32 +152,48 @@ public class MasterToDo {
         showDays.setPadding(new Insets(20, 20, 20, 20));
         GridPane showPane = new GridPane();
 
-        HBox showtext = new HBox();
-
-        String[] toDoMessage = new String[8];
+       VBox showtext = new VBox();
+     
+     // String[] toDoMessage = new String[7];
+      ArrayList<String> toDoMessage = new ArrayList<>();
       try{ 
         for (int k = 0; k < 7; k++) 
         {
           
-             scanFiles[k] = new Scanner("ToDo" + k + ".txt");
-             toDoMessage[k] = scanFiles[k].nextLine();
+             Scanner scanFiles = new Scanner(new File("ToDo" + k + ".txt"));
              TextArea t = new TextArea();
-             t.setText(toDoMessage[k]);
-             System.out.println(toDoMessage[k]);
-            // txt.add(t);
-           //  txt.get(k).setText(scanFiles[k].nextLine());
-             showtext.getChildren().add(t);
-             showPane.add(showtext, 2, 1);
-            
+             t.setEditable(false);
+             String s;
+             while(scanFiles.hasNextLine())
+             {
+             //toDoMessage[k] = scanFiles.nextLine();
+                 s=(""+scanFiles.nextLine()+","+scanFiles.nextLine()+","+scanFiles.nextLine()+"");
+                 toDoMessage.add(s);
+                 t.setText(toDoMessage.get(k)); 
+             }
+             
+             
+            // t.setText(toDoMessage[k]);    
+               
+             System.out.println(toDoMessage.get(k));
+            // System.out.println(toDoMessage[k]);
+             showtext.getChildren().add(t); 
+             scanFiles.close();
              
        }
+        showPane.add(showtext, 2, 1); 
       }
-    catch(FileNotFoundException e){
+    catch(FileNotFoundException e)
+    {
      System.out.println("File Not Found");
                 
              }
+     catch(NoSuchElementException d)
+     {
+         System.out.println("Add More Lines (three in each day)");
+     }
         // t.setEditable(false);
-
+     
         showPane.add(showDays, 1, 1);
         
         showPane.setHgap(10);
@@ -199,6 +216,7 @@ public class MasterToDo {
 
     }
 
+
     private void Clear() {
         for (int k = 0; k < 7; k++) {
             if (cbDays.get(k).isSelected()) {
@@ -207,5 +225,3 @@ public class MasterToDo {
         }
     }
 }
-
-
